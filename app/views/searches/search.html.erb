@@ -1,0 +1,16 @@
+<div id="search-container">
+  <div id="row">
+    <h1>Search SeeClickFix: <br><small>see what’s being reported in your neighborhood</small></h1>
+  </div>
+
+  <div id="row">
+    <div class="form-group" id="search-box"> 
+        <%= form_tag searches_path, { :method => :get, :class => "form-inline" }  do %> 
+          <%= label_tag :q, "Enter Zip Code", :class => "sr-only" %>
+          <%= text_field_tag :q, "enter zip code here", :class => "form-control input-lg", :autofocus => true %>
+          
+          <%= submit_tag "Search", :class => "btn btn-lg btn-primary", :id => "search-button" %>
+        <% end %>
+    </div>
+  </div>
+</div>
