@@ -6,8 +6,14 @@
   <div id="row">
     <div class="form-group" id="search-box"> 
         <%= form_tag searches_path, { :method => :get, :class => "form-inline" }  do %> 
-          <%= label_tag :q, "Enter Zip Code", :class => "sr-only" %>
-          <%= text_field_tag :q, "enter zip code here", :class => "form-control input-lg", :autofocus => true %>
+          <%= label_tag :address, "Address:" %>
+          <%= text_field_tag :q, "", :class => "form-control input-lg", :autofocus => true %><br>
+
+          <%= label_tag :city, "City:" %>
+          <%= text_field_tag :q, "", :class => "form-control input-lg", :autofocus => true %><br>
+
+          <%= label_tag :state, "State:" %>
+          <%= text_field_tag :q, "", :class => "form-control input-lg", :autofocus => true %><br>
           
           <%= submit_tag "Search", :class => "btn btn-lg btn-primary", :id => "search-button" %>
         <% end %>
