@@ -1,17 +1,27 @@
 class APIParser
-  def self.find_issues(address, status, months_since)
+  def self.find_issues(place, status, months_since=1)
     days_after = self.convert_to_days(months_since)
     days_before = days_after - 30
     request = Typhoeus::Request.new(
     "http://seeclickfix.com/api/v2/issues",
     params: {
-      place_url: "#{address}",
+      place_url: "#{place}",
       before: "#{(Date.today - days_before).to_s}",
       after: "#{(Date.today - days_after).to_s}",
       status: "#{status}",
       per_page: "1000"
     })
-    self.hash_from(request)
+    self.hash_from(request, "issues")
+  end
+
+  def self.grab_location(address)
+    request = Typhoeus::Request.new(
+      "http://seeclickfix.com/api/v2/places",
+      params: {
+        address: address
+      })
+    response = self.hash_from(request, "places")
+    response.first["url_name"]
   end
 
   def self.map_categories(issues)
@@ -56,8 +66,8 @@ class APIParser
     month.to_i * 30
   end
 
-  def self.hash_from(request)
-    JSON.parse(request.run.body)["issues"]
+  def self.hash_from(request, api_type)
+    JSON.parse(request.run.body)["#{api_type}"]
   end
 
 end
