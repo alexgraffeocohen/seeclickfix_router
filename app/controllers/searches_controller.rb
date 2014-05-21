@@ -10,21 +10,21 @@ class SearchesController < ApplicationController
     else
       full_address = "#{params[:address]}, #{params[:city]}, #{params[:state]}"
       scf_location = APIParser.grab_location(full_address)
-      update_dash_with(scf_location)
+      update_dash_with(scf_location, full_address)
       redirect_to 'http://see-click-fix-dash.herokuapp.com/seeclickfix'
     end
   end
 
   private
 
-  def update_dash_with(address)
+  def update_dash_with(address, full_address)
     open_issues = APIParser.find_issues(address, 'open')
     closed_issues = APIParser.find_issues(address, 'closed')
     acknowledged_issues = APIParser.find_issues(address, 'acknowledged')
     all_issues = open_issues + closed_issues + acknowledged_issues
 
     send_requests_for([open_issues, closed_issues, acknowledged_issues])
-    update_location_for(address)
+    update_location_for(full_address)
     fetch_categories_for(all_issues)
     generate_graph_for(address)
   end
@@ -47,7 +47,7 @@ class SearchesController < ApplicationController
 
   def update_location_for(address)
     dash_url = "http://see-click-fix-dash.herokuapp.com/widgets"
-    Typhoeus.post("#{dash_url}/welcome", body: { auth_token: 'seeclickfix', text: "#{address.humanize.titleize}" }.to_json)
+    Typhoeus.post("#{dash_url}/welcome", body: { auth_token: 'seeclickfix', text: "#{address}" }.to_json)
   end
 
   def send_requests_for(data)
