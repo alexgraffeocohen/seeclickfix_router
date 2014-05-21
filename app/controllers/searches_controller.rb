@@ -4,27 +4,33 @@ class SearchesController < ApplicationController
   end
 
   def show
-    if field_missing?
+    binding.pry
+    if !params[:address] && !params[:city] && !params[:state]
       flash[:notice] = "Please fill in all fields"
       return render 'search' 
     else
       full_address = "#{params[:address]}, #{params[:city]}, #{params[:state]}"
-      update_dash_with_location(full_address)
+      scf_location = APIParser.grab_location(full_address)
+      update_dash_with(scf_location)
+      redirect_to 'http://see-click-fix-dash.herokuapp.com/seeclickfix'
     end
   end
 
   private
 
-  def field_missing?
-    !params[:address] && !params[:city] && !params[:state]
+  def update_dash_with(address)
+    open_issues = APIParser.find_issues(address, 'open')
+    closed_issues = APIParser.find_issues(address, 'closed')
+    acknowledged_issues = APIParser.find_issues(address, 'acknowledged')
+
+    send_requests_for([open_issues, closed_issues, acknowledged_issues])
   end
 
-  def update_dash_with_location(full_address)
-    # location = get_lat_and_long(full_address)
-
-    # Typhoeus.post("http://localhost:3030/widgets/open", body: {auth_token: 'seeclickfix', current: get_current_value(location, 'open')}.to_json)
-    # Typhoeus.post("http://localhost:3030/widgets/closed", body: {auth_token: 'seeclickfix', current: get_current_value(location, 'closed')}.to_json)
-    # Typhoeus.post("http://localhost:3030/widgets/acknowledged", body: {auth_token: 'seeclickfix', current: get_current_value(location, 'acknowledged')}.to_json)
+  def send_requests_for(data)
+    data.each do |datum|
+      status = datum.first["status"].downcase
+      Typhoeus.post("http://localhost:3030/widgets/#{status}", body: {auth_token: 'seeclickfix', current: datum}.to_json)
+    end
   end
 
 end
