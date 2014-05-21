@@ -19,10 +19,6 @@ class SearchesController < ApplicationController
     !params[:address] && !params[:city] && !params[:state]
   end
 
-  def seeclickfix_doesnt_have_address?(full_address)
-    true
-  end
-
   def update_dash_with_location(full_address)
     # location = get_lat_and_long(full_address)
 
