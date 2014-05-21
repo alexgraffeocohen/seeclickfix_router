@@ -4,7 +4,7 @@ class SearchesController < ApplicationController
   end
 
   def show
-    if !params[:address] && !params[:city] && !params[:state]
+    if fields_missing?
       flash[:notice] = "Please fill in all fields"
       return render 'search' 
     else
@@ -16,6 +16,10 @@ class SearchesController < ApplicationController
   end
 
   private
+
+  def fields_missing?
+    params[:address].blank? || params[:city].blank? || params[:state].blank?
+  end
 
   def update_dash_with(address, full_address)
     open_issues = APIParser.find_issues(address, 'open')
