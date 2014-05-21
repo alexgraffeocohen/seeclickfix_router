@@ -4,7 +4,6 @@ class SearchesController < ApplicationController
   end
 
   def show
-    binding.pry
     if !params[:address] && !params[:city] && !params[:state]
       flash[:notice] = "Please fill in all fields"
       return render 'search' 
@@ -27,9 +26,10 @@ class SearchesController < ApplicationController
   end
 
   def send_requests_for(data)
+    dash_url = "http://see-click-fix-dash.herokuapp.com/widgets"
     data.each do |datum|
       status = datum.first["status"].downcase
-      Typhoeus.post("http://localhost:3030/widgets/#{status}", body: {auth_token: 'seeclickfix', current: datum}.to_json)
+      Typhoeus.post("#{dash_url}/#{status}", body: {auth_token: 'YOUR_AUTH_TOKEN', current: datum.count}.to_json)
     end
   end
 
