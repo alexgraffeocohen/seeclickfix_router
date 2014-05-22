@@ -37,14 +37,14 @@ class SearchesController < ApplicationController
     all_issues = open_issues + closed_issues + acknowledged_issues
 
     send_requests_for([open_issues, closed_issues, acknowledged_issues])
-    update_dash('welcome', auth_token: 'seeclickfix', text: "#{full_address}")
+    update_dash('welcome', text: "#{full_address}")
     fetch_categories_for(all_issues)
     generate_graph_for(address)
   end
 
   def fetch_categories_for(all_issues)
     category_hash = APIParser.map_categories(all_issues)
-    update_dash('categories', auth_token: 'seeclickfix', items: APIParser.generate_dash_hash(category_hash))
+    update_dash('categories', items: APIParser.generate_dash_hash(category_hash))
   end
 
   def generate_graph_for(address)
@@ -53,18 +53,19 @@ class SearchesController < ApplicationController
     data.each do |datum|
       total_closed += datum[:y]
     end
-    update_dash('graph', auth_token: 'seeclickfix', points: data, displayedValue: total_closed / data.count)
+    update_dash('graph', points: data, displayedValue: total_closed / data.count)
   end
 
   def send_requests_for(data)
     dash_url = "http://see-click-fix-dash.herokuapp.com/widgets"
     data.each do |datum|
       status = datum.first["status"].downcase
-      update_dash(status, auth_token: 'seeclickfix', current: datum.count)
+      update_dash(status, current: datum.count)
     end
   end
 
   def update_dash(widget_name, request_hash)
+    request_hash[:auth_token] = 'seeclickfix'
     dash_url = "http://see-click-fix-dash.herokuapp.com/widgets"
     Typhoeus.post("#{dash_url}/#{widget_name}", body: request_hash.to_json)
   end
