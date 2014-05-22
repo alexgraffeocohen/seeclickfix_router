@@ -15,7 +15,7 @@
     }
   }
   #search-box {
-    margin: 40px 5px 60px -55px;
+    margin: 40px 5px 60px -65px;
     text-align: center;
     #search-button {
       margin-left: 75px;
@@ -23,5 +23,10 @@
     label {
       width: 75px;
     }
+  }
+  p#notice {
+    color: #999999;
+    text-align: center;
+    margin-top: -45px;
   }
 }

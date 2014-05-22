@@ -18,7 +18,4 @@ describe APIParser do
     expect(first_issue.values).to include('Open')
     expect(address).to include('New Haven')
   end
-
-  xit 'can update dashboard values' do
-  end
 end

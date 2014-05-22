@@ -10,13 +10,14 @@
           <%= text_field_tag :address, "", :class => "form-control input-lg", :autofocus => true %><br>
 
           <%= label_tag :city, "City:" %>
-          <%= text_field_tag :city, "", :class => "form-control input-lg", :autofocus => true %><br>
+          <%= text_field_tag :city, "", :class => "form-control input-lg" %><br>
 
           <%= label_tag :state, "State:" %>
-          <%= text_field_tag :state, "", :class => "form-control input-lg", :autofocus => true %><br><br>
+          <%= text_field_tag :state, "", :class => "form-control input-lg" %><br><br>
           
           <%= submit_tag "Search", :class => "btn btn-lg btn-primary", :id => "search-button" %>
         <% end %>
     </div>
+      <p id="notice">The search may take a little while. <br> Thanks for your patience!</p>
   </div>
 </div>
