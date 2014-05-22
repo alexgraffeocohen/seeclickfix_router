@@ -4,12 +4,16 @@ class SearchesController < ApplicationController
   end
 
   def show
+    full_address = "#{params[:address]}, #{params[:city]}, #{params[:state]}"
+    scf_location = APIParser.grab_location(full_address)
+
     if fields_missing?
-      flash[:notice] = "Please fill in all fields"
+      flash.now[:notice] = "Please fill in all fields"
       return render 'search' 
+    elsif no_recent_issues_for(scf_location)
+      flash.now[:notice] = "Sorry, there were no recent issues reported in this location."
+      return render 'search'
     else
-      full_address = "#{params[:address]}, #{params[:city]}, #{params[:state]}"
-      scf_location = APIParser.grab_location(full_address)
       update_dash_with(scf_location, full_address)
       redirect_to 'http://see-click-fix-dash.herokuapp.com/seeclickfix'
     end
@@ -19,6 +23,11 @@ class SearchesController < ApplicationController
 
   def fields_missing?
     params[:address].blank? || params[:city].blank? || params[:state].blank?
+  end
+
+  def no_recent_issues_for(address)
+    open_issues = APIParser.find_issues(address, 'open')
+    open_issues.blank?
   end
 
   def update_dash_with(address, full_address)

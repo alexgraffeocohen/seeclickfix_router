@@ -15,10 +15,13 @@
     }
   }
   #search-box {
-    margin: 40px 5px 60px 5px;
+    margin: 40px 5px 60px -55px;
     text-align: center;
     #search-button {
-      margin-left: 5px;
+      margin-left: 75px;
+    }
+    label {
+      width: 75px;
     }
   }
 }
